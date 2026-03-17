@@ -1,0 +1,192 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String      @id
+  name          String
+  email         String
+  emailVerified Boolean     @default(false)
+  image         String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  role          String?     @default("CUSTOMER")
+  phone         String?
+  address       String?
+  isActive      Boolean?    @default(true)
+  sessions      Session[]
+  accounts      Account[]
+  medicines     Medicine[]  @relation("SellerMedicines")
+  orders        Order[]     @relation("CustomerOrders")
+  orderItems    OrderItem[] @relation("SellerOrderItems")
+  reviews       Review[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+// --------------------------
+
+// Enum for user roles
+enum Role {
+  CUSTOMER
+  SELLER
+  ADMIN
+}
+
+// Enum for order status
+enum OrderStatus {
+  PLACED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+// Categories table
+model Category {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  medicines Medicine[]
+}
+
+// Medicines table
+model Medicine {
+  id                   String   @id @default(uuid())
+  name                 String
+  description          String   @db.Text
+  price                Float
+  stock                Int
+  manufacturer         String
+  imageUrl             String?
+  requiresPrescription Boolean  @default(false)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  // Foreign keys
+  categoryId String
+  sellerId   String
+
+  // Relations
+  category   Category    @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  seller     User        @relation("SellerMedicines", fields: [sellerId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[]
+  reviews    Review[]
+}
+
+// Orders table
+model Order {
+  id              String      @id @default(uuid())
+  totalAmount     Float
+  status          OrderStatus @default(PLACED)
+  shippingAddress String
+  phone           String
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  // Foreign keys
+  customerId String
+
+  // Relations
+  customer   User        @relation("CustomerOrders", fields: [customerId], references: [id], onDelete: Restrict)
+  orderItems OrderItem[]
+}
+
+// Order items table (junction table between Order and Medicine)
+model OrderItem {
+  id        String   @id @default(uuid())
+  quantity  Int
+  price     Float // Snapshot of medicine price at order time
+  createdAt DateTime @default(now())
+
+  // Foreign keys
+  orderId    String
+  medicineId String
+  sellerId   String // To help sellers filter their items
+
+  // Relations
+  order    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  medicine Medicine @relation(fields: [medicineId], references: [id], onDelete: Restrict)
+  seller   User     @relation("SellerOrderItems", fields: [sellerId], references: [id], onDelete: Restrict)
+
+  // Composite unique constraint to prevent duplicate items in same order
+  @@unique([orderId, medicineId])
+}
+
+// Reviews table
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int // 1-5 stars
+  comment   String?  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Foreign keys
+  customerId String
+  medicineId String
+
+  // Relations
+  customer User     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  medicine Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)
+
+  // Ensure one review per customer per medicine
+  @@unique([customerId, medicineId])
+}
