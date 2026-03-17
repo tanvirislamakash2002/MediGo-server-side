@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { medicineService } from "./medicine.service";
 
-const createMedicine = async (req: Request, res: Response) => {
+const createMedicine = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const user = req.user
         if (!user) {
@@ -13,10 +13,7 @@ const createMedicine = async (req: Request, res: Response) => {
         const result = await medicineService.createMedicine(req.body, user.id as string)
         res.status(201).json(result)
     } catch (error) {
-        res.status(400).json({
-            error: "Post creation failed",
-            details: error
-        })
+        next(error)
     }
 }
 

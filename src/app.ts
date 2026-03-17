@@ -4,6 +4,7 @@ import { auth } from "./lib/auth";
 import cors from "cors"
 import { medicineRouter } from "./modules/medicine/medicine.route";
 import { categoryRouter } from "./modules/category/category.route";
+import errorHandler from "./middlewares/globalErrorHandler";
 
 const app: Application = express()
 
@@ -22,5 +23,7 @@ app.use('/api/v1/category', categoryRouter)
 app.get("/", (req, res) => {
     res.send("Hello, World!")
 })
+
+app.use(errorHandler)
 
 export default app;
