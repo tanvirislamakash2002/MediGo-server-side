@@ -9,6 +9,12 @@ const createCategory = async (data: Omit<Category, "id" | "createdAt" | "updated
     return result
 }
 
+const getAllCategories = async (payload: { search: string | undefined }) => {
+    const result = await prisma.category.findMany()
+    return result
+}
+
 export const categoryService = {
-    createCategory
+    createCategory,
+    getAllCategories
 }
