@@ -10,7 +10,25 @@ const createCategory = async (data: Omit<Category, "id" | "createdAt" | "updated
 }
 
 const getAllCategories = async (payload: { search: string | undefined }) => {
-    const result = await prisma.category.findMany()
+    const result = await prisma.category.findMany({
+        where: {
+            OR:
+                [
+                    {
+                        name: {
+                            contains: payload.search as string,
+                            mode: "insensitive"
+                        }
+                    },
+                    {
+                        description: {
+                            contains: payload.search as string,
+                            mode: "insensitive"
+                        }
+                    }
+                ]
+        }
+    })
     return result
 }
 

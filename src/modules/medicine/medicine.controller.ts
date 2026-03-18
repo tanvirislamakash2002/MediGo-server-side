@@ -17,6 +17,52 @@ const createMedicine = async (req: Request, res: Response, next: NextFunction) =
     }
 }
 
+const getAllMedicine = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { search } = req.query;
+        const searchString = typeof search === 'string' ? search : undefined;
+
+        const categoryId = req.query.categoryId as string | undefined
+
+        // filter by price
+        const minPrice = req.query.minPrice ? Number(req.query.minPrice) : undefined;
+        const maxPrice = req.query.maxPrice ? Number(req.query.maxPrice) : undefined;
+
+        const manufacturer = req.query.manufacturer as string | undefined
+
+        const requiresPrescription = req.query.requiresPrescription
+            ? req.query.requiresPrescription === 'true'
+                ? true
+                : req.query.requiresPrescription === 'false'
+                    ? false
+                    : undefined
+            : undefined
+
+        const inStock = req.query.inStock
+            ? req.query.inStock === 'true'
+                ? true
+                : undefined
+            : undefined
+
+        const sellerId = req.query.sellerId as string | undefined
+
+        const result = await medicineService.getAllMedicine({ 
+            search: searchString,
+            categoryId,
+            minPrice,
+            maxPrice,
+            manufacturer,
+            requiresPrescription,
+            inStock,
+            sellerId
+        })
+        res.status(200).json(result)
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const medicineController = {
-    createMedicine
+    createMedicine,
+    getAllMedicine
 }

@@ -5,6 +5,11 @@ import auth from "../../middlewares/auth";
 
 const router = express.Router()
 
+router.get(
+    '/',
+    medicineController.getAllMedicine
+)
+
 router.post(
     '/',
     auth(Role.SELLER),

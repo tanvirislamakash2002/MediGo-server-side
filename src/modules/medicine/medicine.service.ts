@@ -1,4 +1,4 @@
-import { Medicine } from "../../../generated/prisma/client";
+import { Medicine, Prisma } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
 const createMedicine = async (data: Omit<Medicine, "id" | "createdAt" | "updatedAt" | "sellerId">, userId: string) => {
@@ -11,6 +11,104 @@ const createMedicine = async (data: Omit<Medicine, "id" | "createdAt" | "updated
     return result
 }
 
+const getAllMedicine = async ({
+    search,
+    categoryId,
+    minPrice,
+    maxPrice,
+    manufacturer,
+    requiresPrescription,
+    inStock,
+    sellerId
+}
+    : {
+        search: string | undefined,
+        categoryId: string | undefined,
+        minPrice: number | undefined,
+        maxPrice: number | undefined,
+        manufacturer: string | undefined,
+        requiresPrescription: boolean | undefined,
+        inStock: boolean | undefined,
+        sellerId: string | undefined,
+    }) => {
+
+    const andConditions: Prisma.MedicineWhereInput[] = []
+    if (search) {
+        andConditions.push({
+            OR:
+                [
+                    {
+                        name: {
+                            contains: search,
+                            mode: "insensitive"
+                        }
+                    },
+                    {
+                        description: {
+                            contains: search,
+                            mode: "insensitive"
+                        }
+                    },
+                    {
+                        manufacturer: {
+                            contains: search,
+                            mode: "insensitive"
+                        }
+                    }
+                ]
+        })
+    }
+    if (categoryId) {
+        andConditions.push({
+            categoryId
+        })
+    }
+    if (minPrice !== undefined || maxPrice !== undefined) {
+        const priceCondition: Prisma.FloatFilter = {}
+        if (minPrice !== undefined) {
+            priceCondition.gte = minPrice
+        }
+        if (maxPrice !== undefined) {
+            priceCondition.lte = maxPrice
+        }
+        andConditions.push({
+            price: priceCondition
+        })
+    }
+    if (manufacturer) {
+        andConditions.push({
+            manufacturer: {
+                contains: manufacturer,
+                mode: "insensitive"
+            }
+        })
+    }
+    if (typeof requiresPrescription === 'boolean') {
+        andConditions.push({
+            requiresPrescription
+        })
+    }
+    if (inStock) {
+        andConditions.push({
+            stock: {
+                gt: 0
+            }
+        })
+    }
+    if (sellerId) {
+        andConditions.push({
+            sellerId
+        })
+    }
+    const result = await prisma.medicine.findMany({
+        where: {
+            AND: andConditions.length > 0 ? andConditions : {}
+        }
+    })
+    return result
+}
+
 export const medicineService = {
-    createMedicine
+    createMedicine,
+    getAllMedicine
 }
