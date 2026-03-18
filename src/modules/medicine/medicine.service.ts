@@ -145,6 +145,26 @@ const getMedicineById = async (medicineId: string) => {
     return result
 }
 
+const getMyMedicine = async (sellerId: string) => {
+    const result = await prisma.medicine.findMany({
+        where: {
+            sellerId
+        },
+        orderBy: {
+            createdAt: "desc"
+        }
+    })
+    const total = await prisma.medicine.count({
+        where: {
+            sellerId
+        }
+    })
+    return {
+        data: result,
+        total
+    }
+}
+
 const deleteMedicine = async (medicineId: string, sellerId: string) => {
     const medicineData = await prisma.medicine.findFirst({
         where: {
@@ -196,6 +216,7 @@ export const medicineService = {
     createMedicine,
     getAllMedicine,
     getMedicineById,
+    getMyMedicine,
     deleteMedicine,
     updateMedicine
 }

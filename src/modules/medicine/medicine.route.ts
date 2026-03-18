@@ -10,6 +10,11 @@ router.get(
     medicineController.getAllMedicine
 )
 router.get(
+    '/my-medicines',
+    auth(Role.SELLER),
+    medicineController.getMyMedicine
+)
+router.get(
     '/:medicineId',
     medicineController.getMedicineById
 )
