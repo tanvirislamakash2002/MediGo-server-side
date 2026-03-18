@@ -114,16 +114,62 @@ const getAllMedicine = async ({
         take: limit,
         skip,
         where: {
-            AND: andConditions.length > 0 ? andConditions : {}
+            AND: andConditions
         },
         orderBy: {
             [sortBy]: sortOrder
         }
     })
+    const total = await prisma.medicine.count({
+        where: {
+            AND: andConditions
+        },
+    })
+    return {
+        data: result,
+        pagination: {
+            total,
+            page,
+            limit,
+            totalPage: Math.ceil(total / limit)
+        }
+    }
+}
+
+const getMedicineById = async (medicineId: string) => {
+    const result = await prisma.medicine.findUnique({
+        where: {
+            id: medicineId
+        }
+    })
     return result
+}
+
+const deleteMedicine = async (medicineId: string, sellerId: string) => {
+    const medicineData = await prisma.medicine.findFirst({
+        where: {
+            id: medicineId,
+            sellerId
+        },
+        select: {
+            id: true
+        }
+    })
+    if (!medicineData) {
+        throw new Error("Your provided input is invalid")
+    }
+
+    const result = await prisma.medicine.delete({
+        where: {
+            id: medicineData.id
+        }
+    })
+    return result;
 }
 
 export const medicineService = {
     createMedicine,
-    getAllMedicine
+    getAllMedicine,
+    getMedicineById,
+    deleteMedicine
 }

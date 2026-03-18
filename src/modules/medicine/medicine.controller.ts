@@ -76,7 +76,33 @@ const getAllMedicine = async (req: Request, res: Response, next: NextFunction) =
     }
 }
 
+const getMedicineById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { medicineId } = req.params;
+        if (!medicineId) {
+            throw new Error("Medicine Id is required")
+        }
+        const result = await medicineService.getMedicineById(medicineId as string)
+        res.status(200).json(result)
+    } catch (error) {
+        next(error)
+    }
+}
+
+const deleteMedicine = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const user = req.user;
+        const { medicineId } = req.params;
+        const result = await medicineService.deleteMedicine(medicineId as string, user?.id as string)
+        res.status(200).json(result)
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const medicineController = {
     createMedicine,
-    getAllMedicine
+    getAllMedicine,
+    getMedicineById,
+    deleteMedicine
 }
