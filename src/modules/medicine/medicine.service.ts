@@ -167,9 +167,35 @@ const deleteMedicine = async (medicineId: string, sellerId: string) => {
     return result;
 }
 
+const updateMedicine = async (medicineId: string, sellerId: string, data: Partial<Omit<Medicine, "id" | "createdAt" | "updatedAt" | "sellerId">>) => {
+    const medicineData = await prisma.medicine.findFirst({
+        where: {
+            id: medicineId,
+            sellerId
+        },
+        select: {
+            id: true
+        }
+    })
+    if (!medicineData) {
+        throw new Error("Your provided input is invalid")
+    }
+
+    const result = await prisma.medicine.update({
+        where: {
+            id: medicineData.id
+        },
+        data
+
+    })
+
+    return result
+}
+
 export const medicineService = {
     createMedicine,
     getAllMedicine,
     getMedicineById,
-    deleteMedicine
+    deleteMedicine,
+    updateMedicine
 }

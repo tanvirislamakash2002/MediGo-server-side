@@ -100,9 +100,27 @@ const deleteMedicine = async (req: Request, res: Response, next: NextFunction) =
     }
 }
 
+const updateMedicine = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const user = req.user
+        const { medicineId } = req.params
+        const payload = req.body
+
+        const result = await medicineService.updateMedicine(
+            medicineId as string,
+            user?.id as string,
+            payload)
+
+        res.status(200).json(result)
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const medicineController = {
     createMedicine,
     getAllMedicine,
     getMedicineById,
-    deleteMedicine
+    deleteMedicine,
+    updateMedicine
 }

@@ -24,5 +24,10 @@ router.delete(
     auth(Role.SELLER),
     medicineController.deleteMedicine
 )
+router.patch(
+    '/:medicineId',
+    auth(Role.SELLER),
+    medicineController.updateMedicine
+)
 
 export const medicineRouter: Router = router;
