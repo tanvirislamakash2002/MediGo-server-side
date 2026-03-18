@@ -19,7 +19,12 @@ const getAllMedicine = async ({
     manufacturer,
     requiresPrescription,
     inStock,
-    sellerId
+    sellerId,
+    page,
+    limit,
+    skip,
+    sortBy,
+    sortOrder
 }
     : {
         search: string | undefined,
@@ -30,6 +35,11 @@ const getAllMedicine = async ({
         requiresPrescription: boolean | undefined,
         inStock: boolean | undefined,
         sellerId: string | undefined,
+        page: number,
+        limit: number,
+        skip: number,
+        sortBy: string,
+        sortOrder: string | undefined
     }) => {
 
     const andConditions: Prisma.MedicineWhereInput[] = []
@@ -101,8 +111,13 @@ const getAllMedicine = async ({
         })
     }
     const result = await prisma.medicine.findMany({
+        take: limit,
+        skip,
         where: {
             AND: andConditions.length > 0 ? andConditions : {}
+        },
+        orderBy: {
+            [sortBy]: sortOrder
         }
     })
     return result
