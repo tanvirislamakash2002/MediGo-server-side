@@ -1,0 +1,39 @@
+enum OrderStatus {
+  PLACED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  totalAmount     Float
+  status          OrderStatus @default(PLACED)
+  shippingAddress String
+  phone           String
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  customerId String
+
+  customer   User        @relation("CustomerOrders", fields: [customerId], references: [id], onDelete: Restrict)
+  orderItems OrderItem[]
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  quantity  Int
+  price     Float 
+  createdAt DateTime @default(now())
+
+  orderId    String
+  medicineId String
+  sellerId   String 
+
+  order    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  medicine Medicine @relation(fields: [medicineId], references: [id], onDelete: Restrict)
+  seller   User     @relation("SellerOrderItems", fields: [sellerId], references: [id], onDelete: Restrict)
+
+  @@unique([orderId, medicineId])
+}

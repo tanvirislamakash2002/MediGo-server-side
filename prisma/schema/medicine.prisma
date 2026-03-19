@@ -1,0 +1,30 @@
+model Category {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  medicines Medicine[]
+}
+
+model Medicine {
+  id                   String   @id @default(uuid())
+  name                 String
+  description          String   @db.Text
+  price                Float
+  stock                Int
+  manufacturer         String
+  imageUrl             String?
+  requiresPrescription Boolean  @default(false)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  categoryId String
+  sellerId   String
+
+  category   Category    @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  seller     User        @relation("SellerMedicines", fields: [sellerId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[]
+  reviews    Review[]
+}
