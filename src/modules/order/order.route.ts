@@ -8,7 +8,12 @@ const router = express.Router()
 router.get(
     '/',
     auth(Role.CUSTOMER),
-    orderController.getMyOrder
+    orderController.getMyOrders
+)
+router.get(
+    '/seller',
+    auth(Role.SELLER),
+    orderController.getSellerOrders
 )
 
 router.post(

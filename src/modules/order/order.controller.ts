@@ -15,10 +15,20 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
-const getMyOrder = async (req: Request, res: Response, next: NextFunction) => {
+const getMyOrders = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const user = req.user
-        const result = await orderService.getMyOrder(user?.id as string)
+        const result = await orderService.getMyOrders(user?.id as string)
+        res.status(201).json(result)
+    } catch (error) {
+        next(error)
+    }
+}
+
+const getSellerOrders = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const user = req.user
+        const result = await orderService.getSellerOrders(user?.id as string)
         res.status(201).json(result)
     } catch (error) {
         next(error)
@@ -27,5 +37,6 @@ const getMyOrder = async (req: Request, res: Response, next: NextFunction) => {
 
 export const orderController = {
     createOrder,
-    getMyOrder
+    getMyOrders,
+    getSellerOrders
 }

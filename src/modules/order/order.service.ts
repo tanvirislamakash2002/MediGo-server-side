@@ -75,13 +75,47 @@ const createOrder = async (data: CreateOrderInput) => {
     return result;
 }
 
-const getMyOrder = async (customerId: string) => {
+const getMyOrders = async (customerId: string) => {
     const result = await prisma.order.findMany({
         where: {
             customerId
         },
-        orderBy:{
-            createdAt:'desc'
+        orderBy: {
+            createdAt: 'desc'
+        }
+    })
+    return result
+}
+const getSellerOrders = async (sellerId: string) => {
+    const result = await prisma.orderItem.findMany({
+        where: {
+            sellerId
+        },
+        orderBy: {
+            createdAt: 'desc'
+        },
+        include: {
+            order: {
+                include: {
+                    customer: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                            phone: true,
+                            address: true,
+                        }
+                    }
+                }
+            },
+            medicine: {
+                select: {
+                    id: true,
+                    name: true,
+                    imageUrl: true,
+                    price: true
+                }
+            }
         }
     })
     return result
@@ -90,5 +124,6 @@ const getMyOrder = async (customerId: string) => {
 
 export const orderService = {
     createOrder,
-    getMyOrder
+    getMyOrders,
+    getSellerOrders
 }
