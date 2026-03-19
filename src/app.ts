@@ -4,6 +4,7 @@ import { auth } from "./lib/auth";
 import cors from "cors"
 import { medicineRouter } from "./modules/medicine/medicine.route";
 import { categoryRouter } from "./modules/category/category.route";
+import { orderRouter } from "./modules/order/order.route";
 import errorHandler from "./middlewares/globalErrorHandler";
 import { notFound } from "./middlewares/notFound";
 
@@ -18,8 +19,9 @@ app.use(express.json())
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
-app.use('/api/v1/medicine', medicineRouter)
 app.use('/api/v1/category', categoryRouter)
+app.use('/api/v1/medicine', medicineRouter)
+app.use('/api/v1/order', orderRouter)
 
 app.get("/", (req, res) => {
     res.send("Hello, World!")
