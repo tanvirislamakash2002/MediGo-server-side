@@ -1,5 +1,3 @@
-
-import { Order, OrderStatus } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
 interface OrderItemInput {
@@ -77,7 +75,20 @@ const createOrder = async (data: CreateOrderInput) => {
     return result;
 }
 
+const getMyOrder = async (customerId: string) => {
+    const result = await prisma.order.findMany({
+        where: {
+            customerId
+        },
+        orderBy:{
+            createdAt:'desc'
+        }
+    })
+    return result
+}
+
 
 export const orderService = {
-    createOrder
+    createOrder,
+    getMyOrder
 }

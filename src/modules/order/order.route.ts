@@ -1,9 +1,15 @@
-import express, { NextFunction, Request, Response, Router } from "express"
+import express, { Router } from "express"
 import { orderController } from "./order.controller";
 import { Role } from "../../../generated/prisma/enums";
 import auth from "../../middlewares/auth";
 
 const router = express.Router()
+
+router.get(
+    '/',
+    auth(Role.CUSTOMER),
+    orderController.getMyOrder
+)
 
 router.post(
     '/',
