@@ -10,6 +10,14 @@ router.get(
     medicineController.getAllMedicine
 )
 router.get(
+    '/price-range',
+    medicineController.getPriceRange
+);
+router.get(
+    '/manufacturers',
+    medicineController.getManufacturers
+);
+router.get(
     '/my-medicines',
     auth(Role.SELLER),
     medicineController.getMyMedicine

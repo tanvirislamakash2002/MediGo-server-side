@@ -23,13 +23,19 @@ const getAllMedicine = async (req: Request, res: Response, next: NextFunction) =
         const { search } = req.query;
         const searchString = typeof search === 'string' ? search : undefined;
 
-        const categoryId = req.query.categoryId as string | undefined
+        const categoryId = req.query.categoryId as string | undefined;
+        const categoryName = req.query.categoryName as string | undefined;
+        const categoryIds = req.query.categoryIds
+            ? (req.query.categoryIds as string).split(',')
+            : undefined;
 
-        // filter by price
         const minPrice = req.query.minPrice ? Number(req.query.minPrice) : undefined;
         const maxPrice = req.query.maxPrice ? Number(req.query.maxPrice) : undefined;
 
-        const manufacturer = req.query.manufacturer as string | undefined
+        const manufacturer = req.query.manufacturer as string | undefined;
+        const manufacturerList = req.query.manufacturerList
+            ? (req.query.manufacturerList as string).split(',')
+            : undefined;
 
         const requiresPrescription = req.query.requiresPrescription
             ? req.query.requiresPrescription === 'true'
@@ -37,15 +43,11 @@ const getAllMedicine = async (req: Request, res: Response, next: NextFunction) =
                 : req.query.requiresPrescription === 'false'
                     ? false
                     : undefined
-            : undefined
+            : undefined;
 
-        const inStock = req.query.inStock
-            ? req.query.inStock === 'true'
-                ? true
-                : undefined
-            : undefined
+        const inStock = req.query.inStock === 'true';
 
-        const sellerId = req.query.sellerId as string | undefined
+        const sellerId = req.query.sellerId as string | undefined;
 
         const {
             page,
@@ -53,14 +55,17 @@ const getAllMedicine = async (req: Request, res: Response, next: NextFunction) =
             skip,
             sortBy,
             sortOrder
-        } = paginationSortingHelper(req.query)
+        } = paginationSortingHelper(req.query);
 
         const result = await medicineService.getAllMedicine({
             search: searchString,
             categoryId,
+            categoryName,
+            categoryIds,
             minPrice,
             maxPrice,
             manufacturer,
+            manufacturerList,
             requiresPrescription,
             inStock,
             sellerId,
@@ -69,12 +74,13 @@ const getAllMedicine = async (req: Request, res: Response, next: NextFunction) =
             skip,
             sortBy,
             sortOrder
-        })
-        res.status(200).json(result)
+        });
+
+        res.status(200).json(result);
     } catch (error) {
-        next(error)
+        next(error);
     }
-}
+};
 
 const getMedicineById = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -128,11 +134,39 @@ const updateMedicine = async (req: Request, res: Response, next: NextFunction) =
     }
 }
 
+const getPriceRange = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const result = await medicineService.getPriceRange(); 
+
+        res.status(200).json({
+            success: true,
+            data: result
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getManufacturers = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const result = await medicineService.getManufacturers(); 
+
+        res.status(200).json({
+            success: true,
+            data: result
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const medicineController = {
     createMedicine,
     getAllMedicine,
     getMedicineById,
     getMyMedicine,
     deleteMedicine,
-    updateMedicine
+    updateMedicine,
+    getPriceRange,
+    getManufacturers
 }
