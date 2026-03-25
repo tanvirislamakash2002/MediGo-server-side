@@ -27,4 +27,8 @@ model Medicine {
   seller     User        @relation("SellerMedicines", fields: [sellerId], references: [id], onDelete: Cascade)
   orderItems OrderItem[]
   reviews    Review[]
+
+  cartItems CartItem[]
+
+  @@map("medicines")
 }

@@ -23,6 +23,8 @@ model User {
   orderItems    OrderItem[] @relation("SellerOrderItems")
   reviews       Review[]
 
+  cart Cart?
+
   @@map("user")
 }
 

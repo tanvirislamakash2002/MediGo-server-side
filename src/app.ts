@@ -7,6 +7,7 @@ import { categoryRouter } from "./modules/category/category.route";
 import { orderRouter } from "./modules/order/order.route";
 import errorHandler from "./middlewares/globalErrorHandler";
 import { notFound } from "./middlewares/notFound";
+import { cartRouter } from "./modules/cart/cart.route";
 
 const app: Application = express()
 
@@ -21,6 +22,7 @@ app.all("/api/auth/*splat", toNodeHandler(auth));
 
 app.use('/api/v1/category', categoryRouter)
 app.use('/api/v1/medicine', medicineRouter)
+app.use('/api/v1/cart', cartRouter);
 app.use('/api/v1/order', orderRouter)
 
 app.get("/", (req, res) => {

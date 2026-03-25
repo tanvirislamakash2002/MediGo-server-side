@@ -24,15 +24,15 @@ model Order {
 model OrderItem {
   id        String   @id @default(uuid())
   quantity  Int
-  price     Float 
+  price     Float
   createdAt DateTime @default(now())
 
   orderId    String
   medicineId String
-  sellerId   String 
+  sellerId   String
 
   order    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  medicine Medicine @relation(fields: [medicineId], references: [id], onDelete: Restrict)
+  medicine Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade) // Changed to Cascade
   seller   User     @relation("SellerOrderItems", fields: [sellerId], references: [id], onDelete: Restrict)
 
   @@unique([orderId, medicineId])
