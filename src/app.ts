@@ -8,6 +8,7 @@ import { orderRouter } from "./modules/order/order.route";
 import errorHandler from "./middlewares/globalErrorHandler";
 import { notFound } from "./middlewares/notFound";
 import { cartRouter } from "./modules/cart/cart.route";
+import { userRouter } from "./modules/user/user.route";
 
 const app: Application = express()
 
@@ -20,11 +21,11 @@ app.use(express.json())
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
+app.use('/api/v1/admin/users', userRouter);
 app.use('/api/v1/category', categoryRouter)
 app.use('/api/v1/medicine', medicineRouter)
 app.use('/api/v1/cart', cartRouter);
 app.use('/api/v1/order', orderRouter)
-
 app.get("/", (req, res) => {
     res.send("Hello, World!")
 })
