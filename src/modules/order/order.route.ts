@@ -37,4 +37,29 @@ router.patch(
     orderController.updateOrderStatus
 );
 
+router.post(
+    '/:orderId/cancel',
+    auth(Role.CUSTOMER),
+    orderController.cancelOrder
+);
+
+// Admin routes 
+router.get(
+    '/admin/orders',
+    auth(Role.ADMIN),
+    orderController.getAllOrders
+);
+
+router.patch(
+    '/admin/orders/:orderId/status',
+    auth(Role.ADMIN),
+    orderController.adminUpdateOrderStatus
+);
+
+router.post(
+    '/admin/orders/:orderId/cancel',
+    auth(Role.ADMIN),
+    orderController.adminCancelOrder
+);
+
 export const orderRouter: Router = router;
