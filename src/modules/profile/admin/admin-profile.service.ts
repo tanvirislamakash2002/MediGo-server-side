@@ -1,9 +1,9 @@
-import { prisma } from "../../lib/prisma";
+import { prisma } from "../../../lib/prisma";
 import bcrypt from "bcryptjs";
 import FormData from "form-data";
 import axios from "axios";
 
-const profileService = {
+const adminProfileService = {
     // Get admin profile
     getProfile: async (userId: string) => {
         const user = await prisma.user.findUnique({
@@ -355,7 +355,7 @@ uploadAvatar: async (userId: string, fileBuffer?: Buffer, fileName?: string) => 
 
     // Export activity logs
     exportActivityLogs: async (userId: string) => {
-        const logs = await profileService.getActivityLogs(userId, 1, 1000);
+        const logs = await adminProfileService.getActivityLogs(userId, 1, 1000);
 
         // Convert to CSV
         const csv = [
@@ -459,4 +459,4 @@ const formatTimeAgo = (date: Date): string => {
     return `${Math.floor(hours / 24)} days ago`;
 };
 
-export default profileService;
+export default adminProfileService;

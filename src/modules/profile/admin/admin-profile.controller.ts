@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import multer from "multer";
-import profileService from "./profile.service";
+import adminProfileService from "./admin-profile.service";
 
 // Configure multer
 const storage = multer.memoryStorage();
@@ -46,7 +46,7 @@ const uploadAvatarHandler = async (
         }
         
         const file = req.file;
-        const result = await profileService.uploadAvatar(
+        const result = await adminProfileService.uploadAvatar(
             user.id,
             file?.buffer,
             file?.originalname
@@ -72,7 +72,7 @@ const getProfile = async (req: Request, res: Response, next: NextFunction) => {
             });
         }
 
-        const result = await profileService.getProfile(user.id);
+        const result = await adminProfileService.getProfile(user.id);
         res.status(200).json(result);
     } catch (error) {
         next(error);
@@ -89,7 +89,7 @@ const updateProfile = async (req: Request, res: Response, next: NextFunction) =>
         }
 
         const { name, email, phone } = req.body;
-        const result = await profileService.updateProfile(user.id, { name, email, phone });
+        const result = await adminProfileService.updateProfile(user.id, { name, email, phone });
         res.status(200).json(result);
     } catch (error) {
         next(error);
@@ -107,7 +107,7 @@ const changePassword = async (req: Request, res: Response, next: NextFunction) =
         }
 
         const { currentPassword, newPassword } = req.body;
-        const result = await profileService.changePassword(user.id, currentPassword, newPassword);
+        const result = await adminProfileService.changePassword(user.id, currentPassword, newPassword);
         res.status(200).json(result);
     } catch (error) {
         next(error);
@@ -124,7 +124,7 @@ const getActiveSessions = async (req: Request, res: Response, next: NextFunction
             });
         }
 
-        const result = await profileService.getActiveSessions(user.id);
+        const result = await adminProfileService.getActiveSessions(user.id);
         res.status(200).json(result);
     } catch (error) {
         next(error);
@@ -143,7 +143,7 @@ const terminateSession = async (req: Request, res: Response, next: NextFunction)
             });
         }
 
-        const result = await profileService.terminateSession(sessionId as string, user.id);
+        const result = await adminProfileService.terminateSession(sessionId as string, user.id);
         res.status(200).json(result);
     } catch (error) {
         next(error);
@@ -162,7 +162,7 @@ const logoutOtherSessions = async (req: Request, res: Response, next: NextFuncti
             });
         }
 
-        const result = await profileService.logoutOtherSessions(user.id, currentSessionId);
+        const result = await adminProfileService.logoutOtherSessions(user.id, currentSessionId);
         res.status(200).json(result);
     } catch (error) {
         next(error);
@@ -182,7 +182,7 @@ const getActivityLogs = async (req: Request, res: Response, next: NextFunction) 
             });
         }
 
-        const result = await profileService.getActivityLogs(user.id, page, limit);
+        const result = await adminProfileService.getActivityLogs(user.id, page, limit);
         res.status(200).json(result);
     } catch (error) {
         next(error);
@@ -199,7 +199,7 @@ const updatePreferences = async (req: Request, res: Response, next: NextFunction
             });
         }
 
-        const result = await profileService.updatePreferences(user.id, req.body);
+        const result = await adminProfileService.updatePreferences(user.id, req.body);
         res.status(200).json(result);
     } catch (error) {
         next(error);
@@ -216,7 +216,7 @@ const exportActivityLogs = async (req: Request, res: Response, next: NextFunctio
             });
         }
 
-        const result = await profileService.exportActivityLogs(user.id);
+        const result = await adminProfileService.exportActivityLogs(user.id);
         res.status(200).json(result);
     } catch (error) {
         next(error);
@@ -233,7 +233,7 @@ const exportAccountData = async (req: Request, res: Response, next: NextFunction
             });
         }
 
-        const result = await profileService.exportAccountData(user.id);
+        const result = await adminProfileService.exportAccountData(user.id);
         res.status(200).json(result);
     } catch (error) {
         next(error);
@@ -252,7 +252,7 @@ const deleteAccount = async (req: Request, res: Response, next: NextFunction) =>
             });
         }
 
-        const result = await profileService.deleteAccount(user.id, reason);
+        const result = await adminProfileService.deleteAccount(user.id, reason);
 
         // Clear session cookie
         res.clearCookie("better-auth.session_token");
@@ -264,7 +264,7 @@ const deleteAccount = async (req: Request, res: Response, next: NextFunction) =>
     }
 };
 
-export const profileController = {
+export const adminProfileController = {
     getProfile,
     updateProfile,
     uploadAvatar, 

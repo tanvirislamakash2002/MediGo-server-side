@@ -16,6 +16,7 @@ model User {
   phone         String?
   address       String?
   isActive      Boolean?    @default(true)
+  seller        Seller?
   sessions      Session[]
   accounts      Account[]
   medicines     Medicine[]  @relation("SellerMedicines")
