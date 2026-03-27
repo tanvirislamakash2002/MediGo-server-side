@@ -1,20 +1,20 @@
 model Seller {
-  id                       String   @id @default(uuid())
-  userId                   String   @unique
-  user                     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  storeName                String?
-  storeDescription         String?
-  storeLogo                String?
-  businessHours            Json?
-  shippingSettings         Json?
-  returnPolicy             Json?
-  payoutInfo               Json?
-  notificationPreferences  Json?
-  isActive                 Boolean  @default(true)
-  isPaused                 Boolean  @default(false)
-  pausedReason             String?
-  createdAt                DateTime @default(now())
-  updatedAt                DateTime @updatedAt
+  id                      String   @id @default(uuid())
+  userId                  String   @unique
+  user                    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  storeName               String?
+  storeDescription        String?
+  storeLogo               String?
+  businessHours           Json?
+  shippingSettings        Json?
+  returnPolicy            Json?
+  payoutInfo              Json?
+  notificationPreferences Json?
+  isActive                Boolean  @default(true)
+  isPaused                Boolean  @default(false)
+  pausedReason            String?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
 
   documents SellerDocument[]
 

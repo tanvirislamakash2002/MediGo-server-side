@@ -5,24 +5,27 @@ enum Role {
 }
 
 model User {
-  id            String      @id
+  id            String   @id
   name          String
-  email         String      @unique
-  emailVerified Boolean     @default(false)
+  email         String   @unique
+  emailVerified Boolean  @default(false)
   image         String?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  role          String?     @default("CUSTOMER")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  role          String?  @default("CUSTOMER")
   phone         String?
   address       String?
-  isActive      Boolean?    @default(true)
-  seller        Seller?
-  sessions      Session[]
-  accounts      Account[]
-  medicines     Medicine[]  @relation("SellerMedicines")
-  orders        Order[]     @relation("CustomerOrders")
-  orderItems    OrderItem[] @relation("SellerOrderItems")
-  reviews       Review[]
+  isActive      Boolean? @default(true)
+
+  customerAddresses CustomerAddress[]
+  wishlists         Wishlist[]
+  seller            Seller?
+  sessions          Session[]
+  accounts          Account[]
+  medicines         Medicine[]        @relation("SellerMedicines")
+  orders            Order[]           @relation("CustomerOrders")
+  orderItems        OrderItem[]       @relation("SellerOrderItems")
+  reviews           Review[]
 
   cart Cart?
 

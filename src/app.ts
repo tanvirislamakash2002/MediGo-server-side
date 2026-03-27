@@ -12,6 +12,7 @@ import { userRouter } from "./modules/user/user.route";
 import { dashboardRouter } from "./modules/dashboard/dashboard.route";
 import { adminProfileRouter  } from "./modules/profile/admin/admin-profile.route";
 import { sellerProfileRouter  } from "./modules/profile/seller/seller-profile.route";
+import { customerProfileRouter  } from "./modules/profile/customer/customer-profile.route";
 
 const app: Application = express()
 
@@ -33,6 +34,7 @@ app.use('/api/v1/order', orderRouter)
 
 app.use('/api/v1/admin/profile', adminProfileRouter );
 app.use('/api/v1/seller/profile', sellerProfileRouter );
+app.use('/api/v1/customer/profile', customerProfileRouter );
 
 app.get("/", (req, res) => {
     res.send("Hello, World!")
