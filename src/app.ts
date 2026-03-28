@@ -13,6 +13,7 @@ import { dashboardRouter } from "./modules/dashboard/dashboard.route";
 import { adminProfileRouter  } from "./modules/profile/admin/admin-profile.route";
 import { sellerProfileRouter  } from "./modules/profile/seller/seller-profile.route";
 import { customerProfileRouter  } from "./modules/profile/customer/customer-profile.route";
+import { uploadRouter } from "./lib/upload/upload.route";
 
 const app: Application = express()
 
@@ -24,6 +25,8 @@ app.use(cors({
 app.use(express.json())
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
+
+app.use('/api/v1/upload', uploadRouter);
 
 app.use('/api/v1/admin/users', userRouter);
 app.use('/api/v1/dashboard', dashboardRouter);
